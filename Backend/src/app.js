@@ -14,6 +14,10 @@ app.use(express.json());
 app.use(urlencoded({extended:true}));
 app.use(cookieParser());
 
+import { adminRouter } from "./routes/admin.route.js";
+
+app.use("/api/v1/admin",adminRouter);
+
 export {
     app
 }
