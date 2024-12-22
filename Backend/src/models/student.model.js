@@ -2,6 +2,11 @@ import mongoose from "mongoose";
 
 const studentSchema = new mongoose.Schema(
     {
+        admin:
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Admin"
+        },
         name: {
             type: String,
             required: true,
@@ -29,7 +34,7 @@ const studentSchema = new mongoose.Schema(
         },
         shift: {
             type: String,
-            enum: ['morning', 'evening'],
+            enum: ["morning", "evening"],
             required: true,
         },
         reservedSeat: {

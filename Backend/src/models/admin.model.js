@@ -17,7 +17,13 @@ const adminSchema = new mongoose.Schema(
         password: {
             type: String,
             required: true,
-        }
+        },
+        myStudents:[
+            {
+                type:mongoose.Schema.Types.ObjectId,
+                ref:"Students"
+            }
+        ]
     },
     {
         timestamps: true,
