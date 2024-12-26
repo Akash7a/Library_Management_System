@@ -58,6 +58,7 @@ const loginAdmin = async (req, res) => {
         }
 
         const isPasswordValid = await admin.comparePassword(password);
+
         if (!isPasswordValid) {
             return res.status(401).json({ message: "Invalid email/username or password" });
         }
@@ -124,8 +125,49 @@ const addStudent = async (req, res) => {
     }
 };
 
+const adminProfile = async (req, res) => {
+    try {
+        const adminId = req.admin?._id;
+
+        if (!adminId) {
+            return res.status(403).json({ message: "Unauthorized: Admin ID not found." });
+        }
+
+        const admin = await Admin.findById(adminId);
+
+        if (!admin) {
+            return res.status(404).json({ message: "Admin not found" });
+        }
+
+        return res.status(200).json({
+            admin: {
+                id: admin._id,
+                username: admin.username,
+                email: admin.email,
+                myStudents: admin.myStudents,
+            },
+            message: "Admin profile fetched successfully."
+        });
+    } catch (error) {
+        console.error("Error fetching admin profile:", error);
+        return res.status(500).json({ message: "Internal Server Error.", error: error.message });
+    }
+}
+const adminLogout = async (req, res) => {
+    try {
+        res.clearCookie("token", options);
+
+        return res.status(200).json({ message: "Admin logged out successfully." });
+    } catch (error) {
+        console.error("Error during logout:", error);
+        return res.status(500).json({ message: "Internal Server Error", error: error.message });
+    }
+}
+
 export {
     registerAdmin,
     loginAdmin,
     addStudent,
+    adminLogout,
+    adminProfile,
 };

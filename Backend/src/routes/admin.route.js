@@ -5,6 +5,8 @@ import{
     registerAdmin,
     loginAdmin,
     addStudent,
+    adminLogout,
+    adminProfile,
 }
 from "../controllers/admin.controller.js";
 
@@ -13,6 +15,8 @@ const adminRouter = Router();
 adminRouter.route("/register").post(registerAdmin);
 adminRouter.route("/login").post(loginAdmin);
 adminRouter.route("/addNewStudent").post(authenticateAdmin,addStudent);
+adminRouter.route("/logout").get(authenticateAdmin,adminLogout);
+adminRouter.route("/getProfile").get(authenticateAdmin,adminProfile);
 
 export {
     adminRouter
