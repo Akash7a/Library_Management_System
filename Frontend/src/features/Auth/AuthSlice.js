@@ -8,13 +8,14 @@ const initialState = {
     success: false,
     message: null,
     token: null,
+    students: null,
 };
 
 export const registeAdmin = createAsyncThunk(
     "auth/register",
     async (userData, thunkApi) => {
         try {
-            const response = await axios.post("/api/v1/admin/register", userData, { withCredentials: true, });
+            const response = await axios.post("/api/v1/admin/register", userData, { withCredentials: true });
             return response.data;
         } catch (error) {
             const isValidationError = error.response?.status === 400;
@@ -39,8 +40,7 @@ export const loginAdmin = createAsyncThunk("auth/login", async (userData, thunkA
 
 export const logoutAdmin = createAsyncThunk("auth/logout", async (_, thunkApi) => {
     try {
-        const response = await axios.get("/api/v1/admin/logout", _, { withCredentials: true });
-
+        const response = await axios.get("/api/v1/admin/logout", { withCredentials: true });
         return response.data;
     } catch (error) {
         const isValidationError = error.response?.status === 400;
@@ -61,6 +61,24 @@ export const loadAdminFromToken = createAsyncThunk("auth/load", async (_, thunkA
                 Authorization: `Bearer ${token}`
             }
         });
+        return response.data;
+    } catch (error) {
+        return thunkApi.rejectWithValue(error.response?.data || "Invalid token");
+    }
+});
+
+export const getStudents = createAsyncThunk("auth/students", async (_, thunkApi) => {
+    try {
+        const response = await axios.get("/api/v1/admin/getStudents", { withCredentials: true });
+        return response.data;
+    } catch (error) {
+        return thunkApi.rejectWithValue(error.response?.data || "Invalid token");
+    }
+});
+
+export const addStudents = createAsyncThunk("auth/addStudents", async (userData, thunkApi) => {
+    try {
+        const response = await axios.post("/api/v1/admin/addNewStudent", userData, { withCredentials: true });
         return response.data;
     } catch (error) {
         return thunkApi.rejectWithValue(error.response?.data || "Invalid token");
@@ -160,6 +178,40 @@ const authSlice = createSlice({
                 state.token = null;
                 state.admin = null;
                 localStorage.removeItem("token");
+            });
+        builder
+            .addCase(getStudents.pending, (state) => {
+                state.pending = true;
+                state.message = "Request in Progress";
+            })
+            .addCase(getStudents.fulfilled, (state, action) => {
+                state.pending = false;
+                state.error = null;
+                state.success = true;
+                state.message = action.payload;
+                state.students = action.payload.myStudents;
+            })
+            .addCase(getStudents.rejected, (state, action) => {
+                state.pending = false;
+                state.error = action.payload;
+                state.message = "Failed to get students.";
+            });
+        builder
+            .addCase(addStudents.pending, (state) => {
+                state.pending = true;
+                state.message = "Request in Progress";
+            })
+            .addCase(addStudents.fulfilled, (state, action) => {
+                state.pending = false;
+                state.error = null;
+                state.success = true;
+                state.students = action.payload.myStudents;
+                state.message = "Students added successfully.";
+            })
+            .addCase(addStudents.rejected, (state, action) => {
+                state.pending = false;
+                state.error = action.payload;
+                state.message = "Failed to add students.";
             });
     },
 });

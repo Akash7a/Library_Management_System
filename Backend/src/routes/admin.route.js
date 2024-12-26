@@ -7,6 +7,7 @@ import{
     addStudent,
     adminLogout,
     adminProfile,
+    getStudents,
 }
 from "../controllers/admin.controller.js";
 
@@ -17,6 +18,7 @@ adminRouter.route("/login").post(loginAdmin);
 adminRouter.route("/addNewStudent").post(authenticateAdmin,addStudent);
 adminRouter.route("/logout").get(authenticateAdmin,adminLogout);
 adminRouter.route("/getProfile").get(authenticateAdmin,adminProfile);
+adminRouter.route("/getStudents").get(authenticateAdmin,getStudents);
 
 export {
     adminRouter

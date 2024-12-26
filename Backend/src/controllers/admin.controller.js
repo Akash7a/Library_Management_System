@@ -125,6 +125,29 @@ const addStudent = async (req, res) => {
     }
 };
 
+const getStudents = async (req, res) => {
+    try {
+        const adminId = req.admin?._id;
+
+        if (!adminId) {
+            return res.status(403).json({ message: "Unauthorized: Admin ID not found" });
+        }
+
+        const admin = await Admin.findById(adminId).populate("myStudents");
+
+        if (!admin || !admin.myStudents) {
+            return res.status(401).json({ message: "No Students found." });
+        }
+
+        return res.status(200).json({
+            myStudents: admin.myStudents,
+            message: "Students fetched successfully"
+        });
+
+    } catch (error) {
+        res.status(500).json({ message: "Server Error", error: error.message });
+    }
+}
 const adminProfile = async (req, res) => {
     try {
         const adminId = req.admin?._id;
@@ -170,4 +193,5 @@ export {
     addStudent,
     adminLogout,
     adminProfile,
+    getStudents,
 };

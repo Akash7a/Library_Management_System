@@ -43,7 +43,7 @@ const studentSchema = new mongoose.Schema(
         },
         isSubscriptionActive: {
             type: Boolean,
-            default: true,
+            default: false,
         },
     },
     {
