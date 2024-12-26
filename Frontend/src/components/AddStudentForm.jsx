@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { addStudents } from '../features/Auth/AuthSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { addStudents, clearSuccess, clearError } from '../features/Student/StudentSlice.js';
 
 const AddStudentForm = () => {
   const dispatch = useDispatch();
+  const { pending, success, error, message } = useSelector((state) => state.auth);
+
   const [student, setStudent] = useState({
     name: '',
     address: '',
@@ -26,7 +28,7 @@ const AddStudentForm = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     dispatch(addStudents(student));
-    
+
     setStudent({
       name: '',
       address: '',
@@ -37,6 +39,11 @@ const AddStudentForm = () => {
       reservedSeat: false,
       isSubscriptionActive: false,
     });
+
+    setTimeout(() => {
+      dispatch(clearSuccess());
+      dispatch(clearError());
+    }, 5000);
   };
 
   return (
@@ -46,7 +53,7 @@ const AddStudentForm = () => {
         className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full"
       >
         <h1 className="text-2xl font-bold mb-6 text-center text-blue-600">Add New Student</h1>
-        
+
         <div className="mb-4">
           <label className="block text-sm font-medium mb-2" htmlFor="name">Name</label>
           <input
@@ -59,7 +66,7 @@ const AddStudentForm = () => {
             required
           />
         </div>
-        
+
         <div className="mb-4">
           <label className="block text-sm font-medium mb-2" htmlFor="address">Address</label>
           <input
@@ -72,7 +79,7 @@ const AddStudentForm = () => {
             required
           />
         </div>
-        
+
         <div className="mb-4">
           <label className="block text-sm font-medium mb-2" htmlFor="mobile">Mobile</label>
           <input
@@ -85,7 +92,7 @@ const AddStudentForm = () => {
             required
           />
         </div>
-        
+
         <div className="mb-4">
           <label className="block text-sm font-medium mb-2" htmlFor="entryDate">Entry Date</label>
           <input
@@ -98,7 +105,7 @@ const AddStudentForm = () => {
             required
           />
         </div>
-        
+
         <div className="mb-4">
           <label className="block text-sm font-medium mb-2" htmlFor="subscriptionEndDate">Subscription End Date</label>
           <input
@@ -111,7 +118,7 @@ const AddStudentForm = () => {
             required
           />
         </div>
-        
+
         <div className="mb-4">
           <label className="block text-sm font-medium mb-2" htmlFor="shift">Shift</label>
           <select
@@ -127,7 +134,7 @@ const AddStudentForm = () => {
             <option value="evening">Evening</option>
           </select>
         </div>
-        
+
         <div className="mb-4">
           <label className="block text-sm font-medium mb-2">
             <input
@@ -140,7 +147,7 @@ const AddStudentForm = () => {
             Reserved Seat
           </label>
         </div>
-        
+
         <div className="mb-6">
           <label className="block text-sm font-medium mb-2">
             <input
@@ -153,13 +160,17 @@ const AddStudentForm = () => {
             Subscription Active
           </label>
         </div>
-        
+
         <button
           type="submit"
           className="w-full bg-blue-600 text-white p-3 rounded hover:bg-blue-700 transition"
+          disabled={pending}
         >
-          Add Student
+          {pending ? "Adding..." : "Add Student"}
         </button>
+
+        {success && <p className="mt-4 text-green-600">{message || "Student added successfully!"}</p>}
+        {error && <p className="mt-4 text-red-600">{message || "An error occurred"}</p>}
       </form>
     </div>
   );

@@ -1,11 +1,10 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from "react-redux";
-import { getStudents } from '../features/Auth/AuthSlice.js';
-import { Link } from "react-router-dom";
+import { getStudents } from "../features/Student/StudentSlice.js";
 
 const Home = () => {
   const dispatch = useDispatch();
-  const { students, pending, error } = useSelector((state) => state.auth);
+  const { students, pending, error } = useSelector((state) => state.student);
 
   useEffect(() => {
     if (!students) {
@@ -37,20 +36,21 @@ const Home = () => {
                 <th className="py-4 px-8 text-left text-lg font-semibold border border-gray-200">Name</th>
                 <th className="py-4 px-8 text-left text-lg font-semibold border border-gray-200">Address</th>
                 <th className="py-4 px-8 text-left text-lg font-semibold border border-gray-200">Mobile</th>
-                <th className="py-4 px-8 text-left text-lg font-semibold border border-gray-200">Days Remaining</th>
+                <th className="py-4 px-8 text-left text-lg font-semibold border border-gray-200">Days</th>
                 <th className="py-4 px-8 text-left text-lg font-semibold border border-gray-200">Shift</th>
-                <th className="py-4 px-8 text-left text-lg font-semibold border border-gray-200">Reserved Seat</th>
-                <th className="py-4 px-8 text-left text-lg font-semibold border border-gray-200">Subscription Active</th>
+                <th className="py-4 px-8 text-left text-lg font-semibold border border-gray-200">Reserved</th>
+                <th className="py-4 px-8 text-left text-lg font-semibold border border-gray-200">Subscription</th>
+                <th className="py-4 px-8 text-left text-lg font-semibold border border-gray-200">Remove</th>
               </tr>
             </thead>
             <tbody>
               {pending ? (
                 <tr>
-                  <td colSpan="7" className="py-6 px-6 text-center text-lg text-gray-800">Loading...</td>
+                  <td colSpan="8" className="py-6 px-6 text-center text-lg text-gray-800">Loading...</td>
                 </tr>
               ) : error ? (
                 <tr>
-                  <td colSpan="7" className="py-6 px-6 text-center text-lg text-red-600">{error}</td>
+                  <td colSpan="8" className="py-6 px-6 text-center text-lg text-red-600">{error}</td>
                 </tr>
               ) : students && students.length > 0 ? (
                 students.map((student, index) => (
@@ -67,11 +67,19 @@ const Home = () => {
                     <td className={`py-4 px-8 text-lg border border-gray-200 ${student.isSubscriptionActive ? 'bg-green-400' : 'bg-red-400'}`}>
                       {student.isSubscriptionActive ? 'Active' : 'Inactive'}
                     </td>
+                    <td className="py-4 px-8 text-lg text-gray-800 border border-gray-200">
+                      <button
+                        className="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600"
+                        onClick={() => handleDelete(student._id)}
+                      >
+                        Delete
+                      </button>
+                    </td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan="7" className="py-6 px-6 text-center text-lg text-gray-800">No students available</td>
+                  <td colSpan="8" className="py-6 px-6 text-center text-lg text-gray-800">No students available</td>
                 </tr>
               )}
             </tbody>

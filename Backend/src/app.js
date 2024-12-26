@@ -19,8 +19,9 @@ app.use(urlencoded({ extended: true }));
 app.use(cookieParser());
 
 import { adminRouter } from "./routes/admin.route.js";
-
+import { studentRouter } from "./routes/student.route.js";
 app.use("/api/v1/admin", adminRouter);
+app.use("/api/v1/student",studentRouter);
 
 export {
     app
