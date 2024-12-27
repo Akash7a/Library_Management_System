@@ -95,8 +95,43 @@ const deleteStudent = async (req, res) => {
     }
 }
 
+const updateStudent = async (req, res) => {
+    try {
+        const { studentId } = req.params;
+
+        if (!studentId) {
+            return res.status(403).json({ message: "Student ID not found." });
+        }
+
+        const updateData = req.body;
+
+        if (!updateData) {
+            return res.status(400).json({ message: "No data provided for updating." });
+        }
+
+
+        const updatedStudent = await Students.findByIdAndUpdate(
+            studentId,
+            { $set: updateData },
+            { new: true, runValidators: true }
+        )
+
+        if (!updatedStudent) {
+            return res.status(404).json({ message: "Student not found." });
+        }
+
+        return res.status(200).json({
+            student: updatedStudent,
+            message: "Student updated successfully.",
+        })
+    } catch (error) {
+        res.status(500).json({ message: "Server Error", error: error.message })
+    }
+}
+
 export {
     getStudents,
     addStudent,
     deleteStudent,
+    updateStudent,
 }

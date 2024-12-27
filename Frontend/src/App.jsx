@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { loadAdminFromToken } from './features/Auth/AuthSlice';
 import AddStudentForm from './components/AddStudentForm';
 import Navbar from './components/Navbar';
+import UpdateStudentForm from './components/UpdateStudent';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -25,9 +26,10 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Navbar />}>
           <Route index element={<Register />} />
-          <Route path="login" element={<Login />} />
-          <Route path="home" element={token ? <Home /> : <Navigate to="/login" replace />} />
-          <Route path="addNewStudent" element={<AddStudentForm />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/home" element={token ? <Home /> : <Navigate to="/login" replace />} />
+          <Route path="/addNewStudent" element={<AddStudentForm />} />
+          <Route path='/updateStudent' element={<UpdateStudentForm />} />
         </Route>
       </Routes>
     </div>

@@ -1,9 +1,12 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from "react-redux";
-import { getStudents } from "../features/Student/StudentSlice.js";
+import { getStudents, deleteStudent } from "../features/Student/StudentSlice";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const { students, pending, error } = useSelector((state) => state.student);
 
   useEffect(() => {
@@ -24,6 +27,14 @@ const Home = () => {
     return daysDiff;
   };
 
+  const handleDelete = (studentId) => {
+    dispatch(deleteStudent(studentId));
+  };
+
+  const handleUpdate = (studentId) => {
+    navigate("/updateStudent", { state: { studentId } });
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 p-10 relative">
       <div className="max-w-7xl mx-auto bg-white p-8 rounded-lg shadow-lg">
@@ -41,21 +52,22 @@ const Home = () => {
                 <th className="py-4 px-8 text-left text-lg font-semibold border border-gray-200">Reserved</th>
                 <th className="py-4 px-8 text-left text-lg font-semibold border border-gray-200">Subscription</th>
                 <th className="py-4 px-8 text-left text-lg font-semibold border border-gray-200">Remove</th>
+                <th className="py-4 px-8 text-left text-lg font-semibold border border-gray-200">Update</th>
               </tr>
             </thead>
             <tbody>
               {pending ? (
                 <tr>
-                  <td colSpan="8" className="py-6 px-6 text-center text-lg text-gray-800">Loading...</td>
+                  <td colSpan="9" className="py-6 px-6 text-center text-lg text-gray-800">Loading...</td>
                 </tr>
               ) : error ? (
                 <tr>
-                  <td colSpan="8" className="py-6 px-6 text-center text-lg text-red-600">{error}</td>
+                  <td colSpan="9" className="py-6 px-6 text-center text-lg text-red-600">{error}</td>
                 </tr>
               ) : students && students.length > 0 ? (
                 students.map((student, index) => (
                   <tr
-                    key={index}
+                    key={student._id}
                     className={`border-b hover:bg-gray-100 ${index % 2 === 0 ? 'bg-gray-50' : 'bg-gray-200'}`}
                   >
                     <td className="py-4 px-8 text-lg text-gray-800 border border-gray-200">{student.name}</td>
@@ -75,11 +87,19 @@ const Home = () => {
                         Delete
                       </button>
                     </td>
+                    <td className="py-4 px-8 text-lg text-gray-800 border border-gray-200">
+                      <button
+                        className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600"
+                        onClick={() => handleUpdate(student._id)}
+                      >
+                        Update
+                      </button>
+                    </td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan="8" className="py-6 px-6 text-center text-lg text-gray-800">No students available</td>
+                  <td colSpan="9" className="py-6 px-6 text-center text-lg text-gray-800">No students available</td>
                 </tr>
               )}
             </tbody>
@@ -88,6 +108,6 @@ const Home = () => {
       </div>
     </div>
   );
-}
+};
 
 export default Home;
